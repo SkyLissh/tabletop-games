@@ -1,6 +1,5 @@
 **/*.log
 **/.DS_Store
-*.
 .history
 .yarn
 bazel-*
@@ -10,7 +9,6 @@ bazel-qwik
 bazel-testlogs
 dist
 dist-dev
-lib
 lib-types
 etc
 external

@@ -9,11 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@libsql/client": "^0.7.0",
+    "@paralleldrive/cuid2": "^2.2.2",
     "@radix-ui/react-slot": "^1.1.0",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "drizzle-orm": "^0.32.0",
     "lucide-react": "^0.408.0",
     "next": "14.2.5",
+    "next-auth": "^4.24.7",
     "react": "^18",
     "react-custom-roulette": "^1.4.1",
     "react-dom": "^18",
@@ -26,6 +30,7 @@
     "@types/react-dom": "^18",
     "@typescript-eslint/eslint-plugin": "^7.16.0",
     "@typescript-eslint/parser": "^7.16.0",
+    "drizzle-kit": "^0.23.0",
     "eslint": "^8",
     "eslint-config-next": "14.2.5",
     "eslint-config-prettier": "^9.1.0",
