@@ -1,49 +1,64 @@
-"use client";
+import Image from "next/image";
+import Link from "next/link";
 
-import dynamic from "next/dynamic";
-import { useState } from "react";
+import { Dice5, PencilRuler, UsersRound } from "lucide-react";
+import { getServerSession } from "next-auth/next";
 
-import { type WheelDataType } from "react-custom-roulette";
-
+import { LoginButton } from "@/components/login-button";
 import { Button } from "@/components/ui/button";
 
-const Wheel = dynamic(() => import("react-custom-roulette").then((mod) => mod.Wheel), {
-  ssr: false,
-  loading: () => <div>Loading...</div>,
-});
+import { authOptions } from "@/lib/auth-options";
+import { cn } from "@/lib/utils";
 
-export default function Home() {
-  const [spin, setSpin] = useState(false);
-  const [prize, setPrize] = useState(0);
-
-  const options: WheelDataType[] = [
-    { option: "Tomar x2", style: { backgroundColor: "#00ff00" } },
-    { option: "Tomar x3", style: { backgroundColor: "#0000ff" } },
-    { option: "Tomar x4", style: { backgroundColor: "#ff0000" } },
-    { option: "Tomar x5", style: { backgroundColor: "#ff00ff" } },
-  ];
-
-  const onSpin = () => {
-    const option = Math.floor(Math.random() * options.length);
-
-    setSpin(true);
-    setPrize(option);
-  };
-
-  const onStopSpinning = () => {
-    setSpin(false);
-  };
+export default async function Home() {
+  const session = await getServerSession(authOptions);
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-between p-24">
-      <h1 className="text-xl font-bold">Hello world</h1>
-      <Button onClick={onSpin}>Spin</Button>
-      <Wheel
-        data={options}
-        mustStartSpinning={spin}
-        prizeNumber={prize}
-        onStopSpinning={onStopSpinning}
-      />
+    <main
+      className={cn(
+        "flex min-h-screen flex-col items-center justify-center p-4",
+        !session ? "gap-40" : "gap-10"
+      )}
+    >
+      <div className="flex flex-col items-center gap-4">
+        <h1 className="flex flex-row items-center gap-4 text-2xl font-bold md:text-6xl">
+          <Dice5 className="size-8 md:size-20" />
+          Tabletop Games
+        </h1>
+
+        <q className="text-base italic md:text-xl">Roll Together, Laugh Together</q>
+      </div>
+
+      {session && (
+        <div className="flex flex-row items-center gap-4">
+          <Image
+            src={session.user?.image_url ?? ""}
+            alt={session.user?.username ?? "Profile image"}
+            className="rounded-full"
+            width={48}
+            height={48}
+          />
+          <p className="text-lg font-semibold">{session.user?.username}</p>
+        </div>
+      )}
+
+      <div className="flex w-full flex-col gap-4 md:w-1/3">
+        {!session && <LoginButton />}
+        {session && (
+          <>
+            <Button asChild className="h-12 text-lg">
+              <Link href="/join">
+                <UsersRound className="size-5" /> Join
+              </Link>
+            </Button>
+            <Button asChild variant="outline" className="h-12 text-lg">
+              <Link href="/create">
+                <PencilRuler className="size-5" /> Create
+              </Link>
+            </Button>
+          </>
+        )}
+      </div>
     </main>
   );
 }
