@@ -4,6 +4,9 @@ import type { AuthOptions } from "next-auth";
 import type { DiscordProfile } from "next-auth/providers/discord";
 import DiscordProvider from "next-auth/providers/discord";
 
+import { db } from "@/db";
+import { users } from "@/db/schema/users";
+
 export const authOptions: AuthOptions = {
   providers: [
     DiscordProvider({
@@ -27,6 +30,13 @@ export const authOptions: AuthOptions = {
       }
 
       return token;
+    },
+    async signIn({ profile }) {
+      await db
+        .insert(users)
+        .values({ id: (profile as DiscordProfile).id })
+        .onConflictDoNothing();
+      return true;
     },
     async session({ session, token }) {
       session.user = token.profile;

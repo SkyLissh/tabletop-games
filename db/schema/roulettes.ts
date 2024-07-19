@@ -9,7 +9,7 @@ export const roulettes = sqliteTable("roulettes", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),
-  name: text("name", { length: 255 }),
+  name: text("name", { length: 255 }).notNull().default("My Roulette"),
   userId: text("user_id"),
 });
 

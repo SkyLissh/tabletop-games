@@ -3,6 +3,9 @@ import { Inter } from "next/font/google";
 
 import "@/app/globals.css";
 
+import { Providers } from "@/components/providers";
+import { Toaster } from "@/components/ui/toaster";
+
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
@@ -18,9 +21,10 @@ export default async function RootLayout({
   return (
     <html lang="en" className="dark">
       <body
-        className={`${inter.className} bg-slate-100 text-foreground dark:bg-slate-800`}
+        className={`${inter.className} bg-slate-200 text-foreground dark:bg-slate-800`}
       >
-        {children}
+        <Providers>{children}</Providers>
+        <Toaster />
       </body>
     </html>
   );

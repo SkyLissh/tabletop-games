@@ -8,7 +8,7 @@ export const rouletteOptions = sqliteTable("roulette_options", {
   id: text("id")
     .primaryKey()
     .$defaultFn(() => createId()),
-  option: text("option", { length: 255 }),
+  name: text("name", { length: 255 }).notNull().default("Option"),
   textColor: text("text_color", { length: 7 }),
   backgroundColor: text("background_color", { length: 7 }),
   rouletteId: text("roulette_id"),
