@@ -14,6 +14,7 @@ import { authOptions } from "@/lib/auth-options";
 import { redirect } from "next/navigation";
 
 import type { Roulette, RouletteOption } from "@/schemas/roulette";
+import { revalidatePath } from "next/cache";
 
 export async function createRoulette(formData: FormData) {
   const name = z.string().min(1).max(255).parse(formData.get("name"));
@@ -34,6 +35,7 @@ export async function createRoulette(formData: FormData) {
 
 export async function deleteRoulette(id: string) {
   await db.delete(roulettes).where(eq(roulettes.id, id));
+  revalidatePath("/roulette");
 }
 
 export async function fetchAllRoulettes() {

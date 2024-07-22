@@ -202,6 +202,7 @@ function RouletteWheel({ control }: { control: Control<Roulette> }) {
 
   return (
     <Wheel
+      enabled={true}
       options={
         options.map((option) => ({
           option: option.name,
