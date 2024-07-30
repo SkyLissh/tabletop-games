@@ -5,7 +5,7 @@ import { useEffect } from "react";
 import { useSession } from "next-auth/react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
-import { useParams, useSearchParams } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { Player } from "@lottiefiles/react-lottie-player";
 
@@ -35,6 +35,7 @@ const RouletteWheel = dynamic(
 
 export default function RouletteRoomPage() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
   const params = useSearchParams();
   const rouletteId = params.get("rouletteId");
   const { data: session, status: sessionStatus } = useSession();
@@ -59,16 +60,20 @@ export default function RouletteRoomPage() {
       roulette = await fetchRouletteById(rouletteId);
     }
 
-    await connectToColyseus("roulette", {
-      roomId: id,
-      options: {
-        roulette,
-        player: {
-          name: user?.username,
-          image: user?.image_url,
+    try {
+      await connectToColyseus("roulette", {
+        roomId: id,
+        options: {
+          roulette,
+          player: {
+            name: user?.username,
+            image: user?.image_url,
+          },
         },
-      },
-    });
+      });
+    } catch {
+      router.push("/");
+    }
   };
 
   useEffect(() => {

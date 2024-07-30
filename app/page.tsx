@@ -7,6 +7,8 @@ import { getServerSession } from "next-auth/next";
 import { LoginButton } from "@/components/login-button";
 import { Button } from "@/components/ui/button";
 
+import { JoinRoomDialog } from "@/components/dialogs/join-room-dialog";
+import { Dialog, DialogTrigger } from "@/components/ui/dialog";
 import { authOptions } from "@/lib/auth-options";
 import { cn } from "@/lib/utils";
 
@@ -46,11 +48,14 @@ export default async function Home() {
         {!session && <LoginButton />}
         {session && (
           <>
-            <Button asChild className="h-12 text-lg">
-              <Link href="/join">
-                <UsersRound className="size-5" /> Join
-              </Link>
-            </Button>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button className="h-12 text-lg">
+                  <UsersRound className="size-5" /> Join
+                </Button>
+              </DialogTrigger>
+              <JoinRoomDialog />
+            </Dialog>
             <Button asChild variant="outline" className="h-12 text-lg">
               <Link href="/create">
                 <PencilRuler className="size-5" /> Create

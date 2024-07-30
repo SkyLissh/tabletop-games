@@ -85,6 +85,8 @@ const colyseus = <S = Schema>(
     } catch (e) {
       console.error("Failed to connect to Colyseus!");
       console.log(e);
+
+      throw e;
     } finally {
       connecting = false;
     }
