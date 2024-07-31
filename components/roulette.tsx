@@ -6,10 +6,12 @@ import { useState } from "react";
 import type { WheelDataType } from "react-custom-roulette";
 import { Wheel } from "react-custom-roulette";
 
+import { Player } from "@lottiefiles/react-lottie-player";
+
 type Props = {
   onResult?: (result: string, index: number) => void;
   enabled?: boolean;
-  options: WheelDataType[];
+  options?: WheelDataType[];
 };
 
 export function Roulette({ options, onResult, enabled }: Props) {
@@ -19,23 +21,31 @@ export function Roulette({ options, onResult, enabled }: Props) {
   const onSpin = () => {
     if (spinning || !enabled) return;
 
-    const option = Math.floor(Math.random() * options.length);
+    const option = Math.floor(Math.random() * options!.length);
 
     setSpinning(true);
     setWinner(option);
   };
 
   const onStopSpinning = () => {
-    onResult?.(options[winner].option!, winner);
+    onResult?.(options![winner].option!, winner);
     setSpinning(false);
   };
+
+  if (!options || options?.length === 0) {
+    return (
+      <div className="flex h-[445px] w-full items-center justify-center md:w-[445px]">
+        <Player autoplay loop src="/loader.json" className="size-32" />
+      </div>
+    );
+  }
 
   return (
     <div
       className={cn("relative flex items-center justify-center", !enabled && "grayscale")}
     >
       <Wheel
-        data={options}
+        data={options!}
         mustStartSpinning={spinning}
         prizeNumber={winner}
         onStopSpinning={onStopSpinning}
