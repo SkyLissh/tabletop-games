@@ -72,6 +72,7 @@ export default function RouletteRoomPage() {
         },
       });
     } catch {
+      if (!id) return;
       router.push("/");
     }
   };

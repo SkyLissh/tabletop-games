@@ -36,7 +36,7 @@ export function RouletteResultDialog() {
           <DialogTitle className="text-2xl">{`"${result}"`}</DialogTitle>
           <DialogDescription className="text-lg">{winnerPlayer}</DialogDescription>
         </DialogHeader>
-        <Button type="submit">Understood</Button>
+        <Button onClick={() => setOpen(false)}>Understood</Button>
       </DialogContent>
     </Dialog>
   );
