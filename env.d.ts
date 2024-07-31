@@ -5,5 +5,6 @@ declare namespace NodeJS {
     NEXTAUTH_SECRET: string;
     TURSO_DB_TOKEN: string;
     TURSO_DB_URL: string;
+    NEXT_PUBLIC_COLYSEUS_SERVER: string;
   }
 }
