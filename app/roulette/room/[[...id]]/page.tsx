@@ -72,8 +72,6 @@ export default function RouletteRoomPage() {
         },
       });
     } catch {
-      console.log(id);
-      console.log(rouletteId);
       if (!id) return;
       router.push("/");
     }
