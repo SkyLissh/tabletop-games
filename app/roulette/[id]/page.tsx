@@ -1,7 +1,7 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useParams } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { Control, SubmitHandler } from "react-hook-form";
@@ -10,7 +10,7 @@ import { useFieldArray, useForm, useWatch } from "react-hook-form";
 import { Player } from "@lottiefiles/react-lottie-player";
 import { createId } from "@paralleldrive/cuid2";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { CircleX, Plus } from "lucide-react";
+import { ArrowLeft, CircleX, PencilRuler, Plus } from "lucide-react";
 
 import { queryClient } from "@/components/providers";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { fetchRouletteById, updateRoulette } from "@/actions/roulette";
 import { useToast } from "@/components/ui/use-toast";
 import { Roulette } from "@/schemas/roulette";
+import Link from "next/link";
 import { useEffect, useRef } from "react";
 
 const Wheel = dynamic(() => import("@/components/roulette").then((mod) => mod.Roulette), {
@@ -32,6 +33,7 @@ const Wheel = dynamic(() => import("@/components/roulette").then((mod) => mod.Ro
 
 export default function Page() {
   const { id } = useParams<{ id: string }>();
+  const router = useRouter();
 
   const {
     data: roultte,
@@ -59,6 +61,17 @@ export default function Page() {
 
   return (
     <main className="flex min-h-screen flex-col items-center gap-6 p-10">
+      <nav className="container fixed left-0 top-0 flex flex-row items-center justify-between p-4">
+        <Button variant="secondary" size="icon" onClick={() => router.back()}>
+          <ArrowLeft className="size-5" />
+        </Button>
+        <Button asChild>
+          <Link href={`/roulette/room?rouletteId=${id}`}>
+            <PencilRuler className="size-5" />
+            Create room
+          </Link>
+        </Button>
+      </nav>
       <RouletteForm key={dataUpdatedAt} id={id} roulette={roultte} onSubmit={onUpdate} />
     </main>
   );

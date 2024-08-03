@@ -8,6 +8,9 @@ import Image from "next/image";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 
 import { Player } from "@lottiefiles/react-lottie-player";
+import { DoorOpen } from "lucide-react";
+
+import { cn } from "@/lib/utils";
 
 import {
   connectToColyseus,
@@ -17,9 +20,13 @@ import {
 } from "@/hooks/use-colyseus";
 
 import { RouletteResultDialog } from "@/components/dialogs/roulette-result-dialog";
+import { badgeVariants } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 import { fetchRouletteById } from "@/actions/roulette";
+import { useToast } from "@/components/ui/use-toast";
 import type { Roulette } from "@/schemas/roulette";
+import Link from "next/link";
 
 const RouletteWheel = dynamic(
   () => import("@/components/roulette").then((mod) => mod.Roulette),
@@ -39,6 +46,7 @@ export default function RouletteRoomPage() {
   const params = useSearchParams();
   const rouletteId = params.get("rouletteId");
   const { data: session, status: sessionStatus } = useSession();
+  const { toast } = useToast();
 
   const room = useColyseusRoom();
 
@@ -49,6 +57,15 @@ export default function RouletteRoomPage() {
   const onResult = (result: string) => {
     if (!room) return;
     room.send("spinned", { result });
+  };
+
+  const onCopyToClipboard = async () => {
+    await navigator.clipboard.writeText(room?.id ?? "");
+
+    toast({
+      duration: 1000,
+      title: "Copied to clipboard",
+    });
   };
 
   const connect = async () => {
@@ -72,7 +89,7 @@ export default function RouletteRoomPage() {
         },
       });
     } catch {
-      if (!id) return;
+      if (rouletteId) return;
       router.push("/");
     }
   };
@@ -100,9 +117,26 @@ export default function RouletteRoomPage() {
   }
 
   return (
-    <main className="flex max-h-screen flex-col items-center gap-6 p-10">
-      <h1 className="text-xl font-bold">{rouletteName}</h1>
-      <div className="flex flex-col gap-6 md:flex-row">
+    <main className="flex max-h-screen flex-col items-center gap-4">
+      <nav className="container left-0 top-0 flex flex-row items-center justify-end p-4">
+        <Button variant="destructive" asChild>
+          <Link href="/">
+            <DoorOpen className="size-5" />
+            Left room
+          </Link>
+        </Button>
+      </nav>
+      <div className="flex flex-row items-center gap-4 px-10">
+        <h1 className="text-xl font-bold">{rouletteName}</h1>
+        <button
+          className={cn(badgeVariants({ variant: "default" }), "hover:cursor-pointer")}
+          onClick={() => onCopyToClipboard()}
+        >
+          {room?.id}
+        </button>
+      </div>
+
+      <div className="flex flex-col gap-6 px-10 md:flex-row">
         <RouletteWheel
           enabled={room && room?.sessionId === currentPlayer}
           onResult={onResult}
@@ -117,14 +151,14 @@ export default function RouletteRoomPage() {
             })) ?? []
           }
         />
-        <PlayersList />
+        <PlayersList currentPlayer={currentPlayer} />
         <RouletteResultDialog />
       </div>
     </main>
   );
 }
 
-function PlayersList() {
+function PlayersList({ currentPlayer }: { currentPlayer?: string }) {
   const players = useColyseusState((state) => state.players);
 
   return (
@@ -133,7 +167,11 @@ function PlayersList() {
       {players?.map((player) => (
         <div key={player.sessionId} className="flex flex-row items-center gap-2">
           <Image
-            className="rounded-full"
+            className={cn(
+              "rounded-full",
+              player.sessionId === currentPlayer &&
+                "outline outline-2 outline-offset-2 outline-green-500"
+            )}
             src={player.image}
             alt={player.name}
             width={42}
