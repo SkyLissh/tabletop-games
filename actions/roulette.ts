@@ -52,7 +52,7 @@ export async function fetchRouletteById(id: string) {
     with: { options: true },
   });
 
-  if (result && result.userId !== session!.user.id) redirect("/");
+  if (!result || result.userId !== session!.user.id) redirect("/");
 
   return result;
 }
@@ -99,6 +99,8 @@ export async function updateRoulette(id: string, roulette: Roulette) {
       )
     );
   }
+
+  revalidatePath(`/roulette/${id}`);
 }
 
 async function updateRouletteOptions(options: RouletteOption[]) {
